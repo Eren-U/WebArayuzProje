@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>💱 DövizHattı | Güncel Döviz Paneli</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    * {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      min-height: 100vh;
+      color: #f8fafc;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Dekoratif Arka Plan Halkaları */
+    body::before {
+      content: "";
+      position: absolute;
+      top: -10%;
+      right: -10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%);
+      z-index: -1;
+    }
+
+    body::after {
+      content: "";
+      position: absolute;
+      bottom: -5%;
+      left: -5%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+      z-index: -1;
+    }
+
+    /* HEADER */
+    .app-header {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 20px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .app-header h1 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin: 0;
+      letter-spacing: -0.02em;
+      text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .app-header p {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin: 0;
+    }
+
+    .app-header h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0;
+    }
+
+    .app-header p {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin: 0;
+    }
+
+    /* CARDS */
+    .card {
+      background: #fdfdfd; /* Kırık Beyaz */
+      border: 1px solid rgba(255, 255, 255, 0.8) !important;
+      border-radius: 28px !important;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2) !important;
+      color: #1e293b;
+      height: 100%;
+    }
+
+    .card-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* AMOUNT INPUT */
+    .amount-input {
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      font-size: 2rem;
+      font-weight: 800;
+      color: #1e293b;
+      background: #f8fafc;
+      padding: 12px 20px;
+      width: 100%;
+      outline: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      caret-color: #2563eb; /* İmlecin görünür olmasını sağlar */
+    }
+
+    .amount-input:focus {
+      border-color: #2563eb;
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    .amount-input::placeholder {
+      color: #cbd5e1;
+    }
+
+    /* LABELS */
+    .input-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: #94a3b8;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    /* SELECT */
+    .currency-select {
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #1e293b;
+      background-color: #f8fafc;
+      width: 100%;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      appearance: auto;
+    }
+
+    .currency-select:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+    }
+
+    /* SWAP BUTTON */
+    .swap-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #2563eb;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      flex-shrink: 0;
+      margin-top: 20px;
+    }
+
+    .swap-btn:hover {
+      background: #dbeafe;
+      transform: rotate(180deg);
+    }
+
+    /* CONVERT BUTTON */
+    .convert-btn {
+      background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.3s;
+      letter-spacing: 0.03em;
+      box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .convert-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.5);
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    }
+
+    .convert-btn:active {
+      transform: translateY(0);
+    }
+
+    .convert-btn:disabled {
+      background: #cbd5e1;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    /* RESULT BOX */
+    .result-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+      display: none;
+    }
+
+    .result-box .result-label {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+
+    .result-box .result-amount {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1d4ed8;
+      margin-bottom: 4px;
+    }
+
+    .result-box .result-currency {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-bottom: 10px;
+    }
+
+    .result-box .result-rate {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      border-top: 1px solid #bfdbfe;
+      padding-top: 10px;
+      margin-top: 4px;
+    }
+
+    /* ERROR BOX */
+    .error-box {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      color: #dc2626;
+      display: none;
+    }
+
+    /* RATES TABLE */
+    .rate-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 8px;
+      border-bottom: 1px solid #f1f5f9;
+      border-radius: 8px;
+      transition: background 0.15s;
+    }
+
+    .rate-row:last-child {
+      border-bottom: none;
+    }
+
+    .rate-row:hover {
+      background: #f8fafc;
+    }
+
+    .rate-flag {
+      font-size: 1.5rem;
+      margin-right: 12px;
+    }
+
+    .rate-code {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .rate-name {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+
+    .rate-value-group {
+      text-align: right;
+    }
+
+    .rate-value {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 2px;
+    }
+
+    .rate-try-value {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #059669; /* Yeşil tonu TL için */
+    }
+
+    .rate-basis {
+      font-size: 0.65rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    /* SKELETON */
+    .skeleton {
+      height: 48px;
+      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background-size: 200% 100%;
+      border-radius: 10px;
+      animation: shimmer 1.4s infinite;
+      margin-bottom: 8px;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    /* REFRESH BUTTON */
+    .refresh-btn {
+      background: none;
+      border: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #2563eb;
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.2s;
+    }
+
+    .refresh-btn:hover {
+      color: #1e40af;
+    }
+
+    /* HOW TO USE */
+    .how-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .how-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 6px 0;
+      font-size: 0.875rem;
+      color: #475569;
+    }
+
+    .how-list li .step-num {
+      background: #eff6ff;
+      color: #2563eb;
+      font-weight: 700;
+      font-size: 0.75rem;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* FOOTER */
+    .app-footer {
+      background: #fff;
+      border-top: 1px solid #e2e8f0;
+      padding: 14px 0;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+
+    /* LAST UPDATE */
+    .last-update {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      text-align: right;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 480px) {
+      .amount-input {
+        font-size: 1.4rem;
+      }
+      .result-box .result-amount {
+        font-size: 1.6rem;
+      }
+      .last-update {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="app-header">
+    <div class="container" style="max-width: 680px;">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+          <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-radius: 14px; display:flex; align-items:center; justify-content:center; color:white; font-size: 1.5rem; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);">
+            <i class="fa-solid fa-coins"></i>
+          </div>
+          <div>
+            <h1 style="color: #2dd4bf !important;">Döviz<span style="color: #ffffff;">Hattı</span></h1>
+            <p style="color: #2dd4bf; opacity: 0.9; font-weight: 600;">Canlı Finansal Veri İstasyonu</p>
+          </div>
+        </div>
+        <div class="last-update text-end">
+          <div style="font-size:0.65rem; color:#94a3b8; text-transform:uppercase; font-weight:700;">Canlı Veri</div>
+          <div id="lastUpdate" style="font-size:0.85rem; font-weight:600; color:#fff;">Yükleniyor...</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== MAIN ========== -->
+  <main class="container py-5" style="max-width: 1100px;">
+    <div class="row g-4 align-items-start">
+      
+      <!-- SOL TARAF: HIZLI DÖNÜŞTÜRÜCÜ -->
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-body p-4 p-xl-5">
+            <p class="card-title mb-4"><i class="fa-solid fa-shuffle"></i> Hızlı Dönüştürücü</p>
+
+            <!-- Miktar -->
+            <div class="mb-4">
+              <label class="input-label">Dönüştürülecek Miktar</label>
+              <input
+                type="number"
+                id="amountInput"
+                class="amount-input"
+                placeholder="0"
+                value="1"
+                min="0"
+              />
+            </div>
+
+            <!-- Para birimleri -->
+            <div class="row g-3 align-items-end mb-4">
+              <div class="col-sm-5">
+                <label class="input-label">Kaynak</label>
+                <select id="fromCurrency" class="currency-select">
+                  <option value="USD">🇺🇸 USD – Amerikan Doları</option>
+                  <option value="EUR">🇪🇺 EUR – Euro</option>
+                  <option value="TRY">🇹🇷 TRY – Türk Lirası</option>
+                  <option value="GBP">🇬🇧 GBP – İngiliz Sterlini</option>
+                  <option value="JPY">🇯🇵 JPY – Japon Yeni</option>
+                  <option value="AUD">🇦🇺 AUD – Avustralya Doları</option>
+                </select>
+              </div>
+              <div class="col-sm-2 text-center">
+                <button class="swap-btn mx-auto" id="swapBtn" title="Değiştir" style="margin-top:0; margin-bottom:10px;">⇄</button>
+              </div>
+              <div class="col-sm-5">
+                <label class="input-label">Hedef</label>
+                <select id="toCurrency" class="currency-select">
+                  <option value="USD">🇺🇸 USD – Amerikan Doları</option>
+                  <option value="EUR">🇪🇺 EUR – Euro</option>
+                  <option value="TRY" selected>🇹🇷 TRY – Türk Lirası</option>
+                  <option value="GBP">🇬🇧 GBP – İngiliz Sterlini</option>
+                  <option value="JPY">🇯🇵 JPY – Japon Yeni</option>
+                  <option value="AUD">🇦🇺 AUD – Avustralya Doları</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="error-box mb-3" id="errorBox"></div>
+            <button class="convert-btn mb-4" id="convertBtn">
+              <i class="fa-solid fa-rotate"></i> Hesapla ve Dönüştür
+            </button>
+
+            <!-- Sonuç -->
+            <div class="result-box" id="resultBox">
+              <p class="result-label" id="resultLabel"></p>
+              <p class="result-amount" id="resultAmount"></p>
+              <p class="result-currency" id="resultCurrency"></p>
+              <div class="result-rate" id="resultRate"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SAĞ TARAF: GÜNCEL KURLAR VE TALİMATLAR -->
+      <div class="col-lg-5">
+        
+        <!-- Güncel Kurlar -->
+        <div class="card mb-4">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+              <p class="card-title mb-0"><i class="fa-solid fa-chart-line"></i> Güncel Kurlar</p>
+              <button class="refresh-btn" id="refreshBtn"><i class="fa-solid fa-arrows-rotate"></i> Yenile</button>
+            </div>
+            <div id="ratesContainer">
+              <!-- skeleton -->
+              <div class="skeleton"></div>
+              <div class="skeleton"></div>
+              <div class="skeleton"></div>
+              <div class="skeleton"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nasıl Kullanılır -->
+        <div class="card">
+          <div class="card-body p-4">
+            <p class="card-title mb-3"><i class="fa-solid fa-circle-info"></i> Bilgi Paneli</p>
+            <ul class="how-list">
+              <li><span class="step-num">1</span> Miktarı girin</li>
+              <li><span class="step-num">2</span> Para birimlerini seçin</li>
+              <li><span class="step-num">3</span> Dönüştür butonuna basın</li>
+              <li><span class="step-num">4</span> Çapraz kurları tablodan takip edin</li>
+            </ul>
+            <div class="mt-4 p-3 rounded-4 bg-light border" style="font-size: 0.75rem; color: #64748b;">
+              <i class="fa-solid fa-shield-halved me-1"></i> Veriler 60 saniyede bir otomatik güncellenir.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="app-footer">
+    <div class="container" style="max-width:680px;">
+      Veriler <strong>open.er-api.com</strong> üzerinden anlık olarak alınmaktadır.
+      <span id="footerUpdate" class="d-inline d-sm-none"></span>
+    </div>
+  </footer>
+
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // =============================================
+    // PARA BİRİMİ BİLGİLERİ
+    // =============================================
+    const CURRENCIES = {
+      USD: { name: "Amerikan Doları", flag: "🇺🇸", symbol: "$" },
+      EUR: { name: "Euro",            flag: "🇪🇺", symbol: "€" },
+      TRY: { name: "Türk Lirası",     flag: "🇹🇷", symbol: "₺" },
+      GBP: { name: "İngiliz Sterlini",flag: "🇬🇧", symbol: "£" },
+      JPY: { name: "Japon Yeni",      flag: "🇯🇵", symbol: "¥" },
+      AUD: { name: "Avustralya Doları",flag: "🇦🇺", symbol: "A$"},
+    };
+
+    // Kur verilerini tutan değişken
+    let rates = null;
+
+    // =============================================
+    // SAYI FORMATLAMA
+    // =============================================
+    function formatNumber(num, code) {
+      if (code === "JPY") {
+        return num.toLocaleString("tr-TR", { maximumFractionDigits: 0 });
+      }
+      return num.toLocaleString("tr-TR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 4
+      });
+    }
+
+    // =============================================
+    // API'DEN KUR VERİSİ ÇEK
+    // =============================================
+    function fetchRates() {
+      $("#convertBtn").prop("disabled", true).text("⏳ Kurlar Yükleniyor...");
+      $("#refreshBtn").text("Yükleniyor...").prop("disabled", true);
+      showSkeleton();
+      hideError();
+      hideResult();
+
+      $.ajax({
+        url: "https://open.er-api.com/v6/latest/USD",
+        method: "GET",
+        success: function(data) {
+          if (data.result === "success") {
+            rates = {
+              USD: data.rates.USD,
+              EUR: data.rates.EUR,
+              TRY: data.rates.TRY,
+              GBP: data.rates.GBP,
+              JPY: data.rates.JPY,
+              AUD: data.rates.AUD,
+            };
+
+            // Verinin çekildiği anın Türkiye saati
+            var now = new Date();
+            var formatted = now.toLocaleString("tr-TR", {
+              timeZone: "Europe/Istanbul",
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit" // Saniyeyi de ekledim ki canlı olduğu belli olsun
+            });
+            $("#lastUpdate").text(formatted);
+            $("#footerUpdate").text(" • Son güncelleme: " + formatted);
+
+            renderRates();
+            $("#convertBtn").prop("disabled", false).text("Dönüştür");
+            $("#refreshBtn").text("🔄 Yenile").prop("disabled", false);
+          } else {
+            showError("Kur verisi alınamadı. Lütfen tekrar deneyin.");
+          }
+        },
+        error: function() {
+          showError("⚠️ İnternet bağlantınızı kontrol edin veya daha sonra tekrar deneyin.");
+          $("#convertBtn").prop("disabled", false).text("Dönüştür");
+          $("#refreshBtn").text("🔄 Yenile").prop("disabled", false);
+          showOfflineRates();
+        }
+      });
+    }
+
+    // =============================================
+    // KUR TABLOSUNU DOLDUR
+    // =============================================
+    function renderRates() {
+      var html = "";
+      // 1 TL'nin USD karşılığını bulalım ki diğer kurları TL'ye çevirebilelim
+      var usdToTry = rates["TRY"]; 
+
+      $.each(CURRENCIES, function(code, info) {
+        var rateFromUSD = rates[code];
+        // 1 TL bazlı hesap: (1 / USD_TRY_RATE) * TARGET_USD_RATE
+        var rateFromTRY = (1 / usdToTry) * rateFromUSD;
+
+        html += '<div class="rate-row">';
+        html += '  <div class="d-flex align-items-center">';
+        html += '    <span class="rate-flag">' + info.flag + '</span>';
+        html += '    <div>';
+        html += '      <div class="rate-code">' + code + '</div>';
+        html += '      <div class="rate-name">' + info.name + '</div>';
+        html += '    </div>';
+        html += '  </div>';
+        
+        html += '  <div class="rate-value-group">';
+        // USD Bazlı Satır
+        html += '    <div class="rate-value">' + info.symbol + ' ' + formatNumber(rateFromUSD, code) + ' <span class="rate-basis">/ 1 USD</span></div>';
+        
+        // TL Bazlı Satır (Eğer para birimi TL değilse göster)
+        if (code !== 'TRY') {
+          html += '    <div class="rate-try-value">' + info.symbol + ' ' + formatNumber(rateFromTRY, code) + ' <span class="rate-basis" style="color:#10b981">/ 1 TL</span></div>';
+        } else {
+          html += '    <div class="rate-try-value" style="color:#94a3b8">Referans <span class="rate-basis">/ 1 TL</span></div>';
+        }
+        
+        html += '  </div>';
+        html += '</div>';
+      });
+      $("#ratesContainer").html(html);
+    }
+
+    // Çevrimdışı olunca yaklaşık değerler göster
+    function showOfflineRates() {
+      rates = { USD:1, EUR:0.92, TRY:38.5, GBP:0.79, JPY:155.0, AUD:1.55 };
+      renderRates();
+      $("#ratesContainer").prepend(
+        '<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:8px 12px;font-size:0.75rem;color:#92400e;margin-bottom:10px;">⚠️ İnternet bağlantısı yok — yaklaşık değerler gösteriliyor</div>'
+      );
+    }
+
+    // =============================================
+    // SKELETON (YÜKLENİYOR ANİMASYONU)
+    // =============================================
+    function showSkeleton() {
+      var skeletons = "";
+      for (var i = 0; i < 6; i++) {
+        skeletons += '<div class="skeleton"></div>';
+      }
+      $("#ratesContainer").html(skeletons);
+    }
+
+    // =============================================
+    // HATA / SONUÇ GÖSTER/GİZLE
+    // =============================================
+    function showError(msg) {
+      $("#errorBox").text(msg).show();
+    }
+
+    function hideError() {
+      $("#errorBox").hide();
+    }
+
+    function hideResult() {
+      $("#resultBox").hide();
+    }
+
+    // =============================================
+    // DÖNÜŞTÜR
+    // =============================================
+    function doConvert() {
+      hideError();
+      hideResult();
+
+      if (!rates) {
+        showError("Kur verileri henüz yüklenmedi. Lütfen bekleyin.");
+        return;
+      }
+
+      var amountStr = $("#amountInput").val().toString().replace(",", ".");
+      var amount    = parseFloat(amountStr);
+      var fromCode  = $("#fromCurrency").val();
+      var toCode    = $("#toCurrency").val();
+
+      if (isNaN(amount) || amount <= 0) {
+        showError("⚠️ Lütfen geçerli bir miktar girin.");
+        return;
+      }
+
+      // Hesaplama: from → USD → to
+      var inUSD  = amount / rates[fromCode];
+      var result = inUSD * rates[toCode];
+      var rate1  = rates[toCode] / rates[fromCode];
+
+      var fromInfo = CURRENCIES[fromCode];
+      var toInfo   = CURRENCIES[toCode];
+
+      // Sonucu göster
+      $("#resultLabel").text(amount.toLocaleString("tr-TR") + " " + fromInfo.flag + " " + fromCode + " =");
+      $("#resultAmount").text(toInfo.symbol + " " + formatNumber(result, toCode));
+      $("#resultCurrency").text(toInfo.flag + " " + toInfo.name);
+      $("#resultRate").text(
+        "1 " + fromCode + " = " + toInfo.symbol + " " + formatNumber(rate1, toCode) + " " + toCode
+      );
+
+      $("#resultBox").fadeIn(250);
+    }
+
+    // =============================================
+    // SWAP (PARA BİRİMLERİ DEĞİŞTİR)
+    // =============================================
+    function doSwap() {
+      var fromVal = $("#fromCurrency").val();
+      var toVal   = $("#toCurrency").val();
+      $("#fromCurrency").val(toVal);
+      $("#toCurrency").val(fromVal);
+      hideResult();
+    }
+
+    // =============================================
+    // JQUERY OLAY DİNLEYİCİLERİ
+    // =============================================
+    $(document).ready(function() {
+
+      // İlk yükleme
+      fetchRates();
+
+      // Dönüştür butonu
+      $("#convertBtn").on("click", function() {
+        doConvert();
+      });
+
+      // Enter tuşu
+      $("#amountInput").on("keydown", function(e) {
+        if (e.key === "Enter") doConvert();
+      });
+
+      // Swap butonu
+      $("#swapBtn").on("click", function() {
+        doSwap();
+      });
+
+      // Yenile butonu
+      $("#refreshBtn").on("click", function() {
+        fetchRates();
+      });
+
+      // Select değişince sonucu gizle
+      $("#fromCurrency, #toCurrency").on("change", function() {
+        hideResult();
+      });
+
+      // Miktar değişince sonucu gizle
+      $("#amountInput").on("input", function() {
+        hideResult();
+      });
+
+    });
+  </script>
+
+</body>
+</html>
